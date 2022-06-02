@@ -94,7 +94,7 @@ class Line {
     //NOTE: After a point is moved the line needs to be redrawn with erase() and draw()
     movePoint(pointIndex, offsetX, offsetY, autoRedraw=false) {
         //error checking
-        if (pointIndex > this.points.length) {
+        if (pointIndex > this.pointsAB.length) {
             console.log("This point does not exist in this line. Lines only have 2 points");
             return 1;
         }
@@ -117,7 +117,7 @@ class Line {
         Canvas2D.strokeStyle = this.color;
         Canvas2D.beginPath();
         Canvas2D.moveTo(this.pointsAB[0].x, this.pointsAB[0].y);
-        Canvas2D.lineTo(this.points[1].x, this.points[1].y);
+        Canvas2D.lineTo(this.pointsAB[1].x, this.pointsAB[1].y);
         Canvas2D.closePath();
         Canvas2D.stroke();
     }
@@ -126,7 +126,7 @@ class Line {
         Canvas2D.strokeStyle = "black";
         Canvas2D.beginPath();
         Canvas2D.moveTo(this.pointsAB[0].x, this.pointsAB[0].y);
-        Canvas2D.lineTo(this.points[1].x, this.points[1].y);
+        Canvas2D.lineTo(this.pointsAB[1].x, this.pointsAB[1].y);
         Canvas2D.closePath();
         Canvas2D.stroke();
     }
