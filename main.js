@@ -31,11 +31,27 @@ class Vector {
     getLength() {
         return Math.sqrt((this.x * this.x) + (this.y * this.y));
     }
+    //returns a new vector thats half the length of the vector (preserves direction)
+    getHalf() {
+        return new Vector(this.x / 2, this.y / 2);
+    }
     Normalize() {
         return new Vector(this.x / this.getLength(), this.y / this.getLength());
     }
+    //Subtract 2 vectors
+    sub(vector2) {
+        return new Vector(this.x - vector2.x, this.y - vector2.y);
+    }
+    //Add 2 vectors
+    add(vector2) {
+        return new Vector(this.x + vector2.x, this.y + vector2.y);
+    }
     dotProduct(vector2) {
         return (this.x * vector2.x) + (this.y * vector2.y);
+    }
+    //remove the negative signs of the vector properties
+    static abs(vector) {
+        return new Vector(Math.abs(vector.x), Math.abs(vector.y));
     }
     //Unit Vectors
     //x-axis
@@ -50,6 +66,70 @@ class Vector {
     static DOWN_RIGHT() {return new Vector(1, 1);}
     static DOWN_LEFT() {return new Vector(-1, 1);}
     static NumberOfDirections() {return 8;}
+}
+
+//PointsAB is an array that contains 2 Vectos for point A and point B
+class Line {
+    constructor(pointsAB, color) {
+        this.pointsAB = pointsAB;
+        this.color = color;
+    }
+    //Returns the length of the line
+    getLength() {
+        let difference = Vector.abs(pointsAB[0].sub(pointsAB[1])); 
+        return difference.getLength();
+    }
+    //Move the entire line by offset
+    //NOTE: After a line is moved the line needs to be redrawn with erase() and draw()
+    //Use Set autoredraw to true to automatically redraw the shape after its points have been moved
+    move(offsetX, offsetY, autoRedraw=false) {
+        if (autoRedraw) {this.erase();}
+        this.pointsAB.forEach((point) => {
+            point.x += offsetX;
+            point.y += offsetY;
+        });
+        if (autoRedraw) {this.draw();}
+    }
+    //Move a point in the line, identified by its pointIndex. PointIndex can only be 0 or 1 for lines.
+    //NOTE: After a point is moved the line needs to be redrawn with erase() and draw()
+    movePoint(pointIndex, offsetX, offsetY, autoRedraw=false) {
+        //error checking
+        if (pointIndex > this.points.length) {
+            console.log("This point does not exist in this line. Lines only have 2 points");
+            return 1;
+        }
+        else {
+            if (autoRedraw) {this.erase();}
+            this.pointsAB[pointIndex].x += offsetX;
+            this.pointsAB[pointIndex].y += offsetY;
+            //this.length = this.calculateCenter(this.points);
+            if (autoRedraw) {this.draw();}
+        }
+    }
+    //automatically recolors shape 
+    recolor(color) {
+        this.erase();
+        this.color = color;
+        this.draw();
+    }
+    //draw the shape
+    draw() {
+        Canvas2D.strokeStyle = this.color;
+        Canvas2D.beginPath();
+        Canvas2D.moveTo(this.pointsAB[0].x, this.pointsAB[0].y);
+        Canvas2D.lineTo(this.points[1].x, this.points[1].y);
+        Canvas2D.closePath();
+        Canvas2D.stroke();
+    }
+    //Erase the shape, by redrawing the shape as black (background color)
+    erase() {
+        Canvas2D.strokeStyle = "black";
+        Canvas2D.beginPath();
+        Canvas2D.moveTo(this.pointsAB[0].x, this.pointsAB[0].y);
+        Canvas2D.lineTo(this.points[1].x, this.points[1].y);
+        Canvas2D.closePath();
+        Canvas2D.stroke();
+    }
 }
 
 //Constructor argument is an array of vectors, signifying each point of the outline shape
